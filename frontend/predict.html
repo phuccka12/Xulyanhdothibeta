@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chẩn đoán Calo - CaloLens</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
+  <style>
+    :root{
+      --bg1:#131b27; --bg2:#0f1721; --grid1:#42c77a; --grid2:#ff7a59; --grid3:#ffd166;
+      --text:#f8fbff; --muted:#d7e0ea; --card:rgba(255,255,255,.14);
+      --border:#ffffff26; --ring:#42c77a; --danger:#ff6b6b; --ok:#2ecc71;
+      --radius:18px; --shadow:0 20px 60px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,sans-serif; color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 80% -10%, rgba(66,199,122,.70) 10%, transparent 60%),
+        radial-gradient(1000px 500px at 10% 10%, rgba(255,122,89,.60) 10%, transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow-x:hidden
+    }
+    .container{width:min(1120px,92%); margin-inline:auto}
+
+    /* Header */
+    header{position:sticky; top:0; z-index:40; background:linear-gradient(180deg, rgba(11,16,32,.88), rgba(11,16,32,.35)); backdrop-filter: blur(10px); border-bottom:1px solid var(--border)}
+    nav{display:flex; align-items:center; justify-content:space-between; padding:12px 0}
+    .logo{color:var(--text); text-decoration:none; font-weight:700; letter-spacing:.2px}
+    .nav-links{display:flex; gap:8px; align-items:center}
+    .btn{display:inline-flex; align-items:center; gap:.5rem; font-weight:600; padding:10px 12px; border-radius:12px; border:1px solid var(--border); text-decoration:none; cursor:pointer}
+    .btn-primary{background:linear-gradient(135deg, var(--grid1), #8ff0bd); color:#052012; box-shadow:0 10px 26px rgba(66,199,122,.35)}
+    .btn-secondary{background:transparent; color:var(--text)}
+    .btn-secondary:hover{background:rgba(255,255,255,.06)}
+
+    /* Gate */
+    .gate{margin:32px auto; padding:18px; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); text-align:center}
+
+    /* Layout */
+    .grid {display:grid; grid-template-columns: 1.1fr .9fr; gap:20px; align-items:start; margin:20px 0 40px}
+    @media (max-width: 980px){ .grid { grid-template-columns: 1fr; } }
+
+    /* Uploader */
+    .pane{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px}
+    .pane h2{margin:2px 0 8px; font-size:clamp(1.1rem, 1.1rem + .6vw, 1.6rem)}
+    .uploader{position:relative; border:2px dashed #ffffff2e; border-radius:16px; padding:18px; text-align:center; background:rgba(255,255,255,.04)}
+    .uploader.drag{border-color:#a7ffd3; background:rgba(66,199,122,.08)}
+    .uploader input[type=file]{position:absolute; inset:0; opacity:0; cursor:pointer}
+    .uploader .hint{color:var(--muted); margin:6px 0 2px}
+
+    .preview{display:grid; grid-template-columns: 1fr; gap:10px; margin-top:12px}
+    .preview-img{width:100%; aspect-ratio: 4/3; object-fit:cover; border-radius:12px; border:1px solid var(--border)}
+
+    .row{display:flex; gap:10px; flex-wrap:wrap}
+
+    .pill{display:inline-flex; gap:.5rem; align-items:center; padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:linear-gradient(135deg, var(--grid1), #8ff0bd); color:#052012; font-weight:600}
+
+    .helper{display:flex; gap:8px; flex-wrap:wrap; color:var(--muted); font-size:.95rem}
+
+    .actions{display:flex; gap:8px; justify-content:flex-end}
+
+    /* Results */
+    .result-card{background:var(--card); border:1px solid var(--border); border-radius:16px; padding:14px}
+    .result-grid{display:grid; grid-template-columns: 1fr 1fr; gap:14px}
+    @media (max-width: 680px){ .result-grid{ grid-template-columns: 1fr; } }
+
+    .stat{display:flex; align-items:center; gap:8px}
+    .kpi{font-size:1.5rem; font-weight:700}
+
+    /* Donut */
+    .donut{--carb:40; --protein:30; --fat:30; width:130px; height:130px; border-radius:50%; background:conic-gradient(#6ee7b7 0 calc(var(--carb)*1%), #60a5fa 0 calc((var(--carb)+var(--protein))*1%), #fbbf24 0 100%); position:relative; margin:auto}
+    .donut::after{content:""; position:absolute; inset:20px; background:#0f1721; border-radius:50%; border:1px solid var(--border)}
+
+    /* Skeleton */
+    .skeleton{animation: pulse 1.3s ease-in-out infinite; background: linear-gradient(90deg, #ffffff10, #ffffff18, #ffffff10); background-size: 200% 100%}
+    @keyframes pulse { 0%{background-position: 200% 0} 100%{background-position: -200% 0} }
+
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+  <header id="app-header" class="hidden">
+    <nav class="container">
+      <a href="index.html" class="logo">CaloLens 🥗</a>
+      <div class="nav-links">
+        <span id="welcome-message"></span>
+        <a href="#" id="dashboard-link" class="btn btn-secondary">Dashboard</a>
+        <button id="logout-button" class="btn btn-primary">Đăng xuất</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div id="auth-gate" class="gate"></div>
+
+    <section id="main-content" class="hidden">
+      <h1>Chẩn đoán lượng Calo qua hình ảnh</h1>
+      <div class="grid">
+        <!-- Left: uploader -->
+        <div class="pane">
+          <h2>Tải ảnh bữa ăn</h2>
+          <div id="dropzone" class="uploader" tabindex="0">
+            <input id="image-input" type="file" accept="image/*" />
+            <p><i class="ri-upload-2-line"></i> Kéo & thả ảnh vào đây, hoặc bấm để chọn</p>
+            <p class="hint">Hỗ trợ dán (Ctrl/Cmd + V) ảnh từ clipboard</p>
+          </div>
+
+          <div class="preview hidden" id="preview">
+            <img id="preview-img" class="preview-img" alt="Xem trước ảnh" />
+            <div class="row helper">
+              <span><i class="ri-image-line"></i> <span id="imgMeta">Ảnh: -</span></span>
+              <span><i class="ri-dashboard-2-line"></i> Kích thước tối đa khuyến nghị: 5MB</span>
+            </div>
+            <div class="actions">
+              <button id="analyzeBtn" class="btn btn-primary"><i class="ri-sparkling-2-fill"></i> Phân tích</button>
+              <button id="clearBtn" class="btn btn-secondary">Xóa ảnh</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: results -->
+        <div class="pane">
+          <h2>Kết quả</h2>
+          <div id="results-container">
+            <div class="skeleton" style="height:140px; border-radius:12px;" id="placeholder"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // ===== Auth gate =====
+    const headerEl = document.getElementById('app-header');
+    const gateEl = document.getElementById('auth-gate');
+    const contentEl = document.getElementById('main-content');
+    const welcome = document.getElementById('welcome-message');
+    const logoutBtn = document.getElementById('logout-button');
+
+    const token = localStorage.getItem('authToken');
+    if(!token){
+      headerEl.classList.add('hidden');
+      gateEl.innerHTML = `Bạn cần đăng nhập để sử dụng chức năng chẩn đoán. <a class="btn btn-primary" href="login.html">Đăng nhập</a> <a class="btn btn-secondary" href="register.html">Đăng ký</a>`;
+    } else {
+      headerEl.classList.remove('hidden');
+      contentEl.classList.remove('hidden');
+      const remembered = localStorage.getItem('rememberUsername');
+      welcome.textContent = remembered ? `Xin chào, ${remembered}!` : '';
+    }
+
+    logoutBtn?.addEventListener('click', ()=>{ localStorage.removeItem('authToken'); location.href='index.html'; });
+
+    // ===== Uploader logic =====
+    const drop = document.getElementById('dropzone');
+    const input = document.getElementById('image-input');
+    const preview = document.getElementById('preview');
+    const previewImg = document.getElementById('preview-img');
+    const imgMeta = document.getElementById('imgMeta');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const clearBtn = document.getElementById('clearBtn');
+
+    function setFile(file){
+      if(!file) return;
+      if(!file.type.startsWith('image/')){ alert('Vui lòng chọn file ảnh.'); return; }
+      if(file.size > 5*1024*1024){ alert('Ảnh quá lớn (tối đa 5MB).'); return; }
+      const url = URL.createObjectURL(file);
+      previewImg.src = url; preview.classList.remove('hidden');
+      imgMeta.textContent = `${file.name} — ${(file.size/1024/1024).toFixed(2)}MB`;
+      previewImg.onload = ()=> URL.revokeObjectURL(url);
+      input.files = new DataTransfer(); // reset
+      const dt = new DataTransfer(); dt.items.add(file); input.files = dt.files;
+    }
+
+    input.addEventListener('change', (e)=> setFile(e.target.files[0]));
+    ;['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev, (e)=>{ e.preventDefault(); drop.classList.add('drag'); }));
+    ;['dragleave','drop'].forEach(ev=>drop.addEventListener(ev, (e)=>{ e.preventDefault(); drop.classList.remove('drag'); }));
+    drop.addEventListener('drop', (e)=>{ const f = e.dataTransfer.files?.[0]; setFile(f); });
+    // paste from clipboard
+    window.addEventListener('paste', (e)=>{ const f = [...e.clipboardData.items].find(i=>i.type.startsWith('image/')); if(f){ setFile(f.getAsFile()); }});
+
+    clearBtn?.addEventListener('click', ()=>{ preview.classList.add('hidden'); input.value=''; previewImg.src=''; });
+
+    // ===== Analyze =====
+    const resultsEl = document.getElementById('results-container');
+    const placeholder = document.getElementById('placeholder');
+
+    function renderResults(payload){
+      placeholder?.remove();
+      const { total_kcal = 0, items = [] } = payload || {};
+      const macros = items.reduce((acc,it)=>{
+        const m = it.macros || {}; acc.carb += m.carb||0; acc.protein += m.protein||0; acc.fat += m.fat||0; return acc; }, {carb:0,protein:0,fat:0});
+      const sum = Math.max(1, macros.carb+macros.protein+macros.fat);
+      const carbPct = Math.round(macros.carb/sum*100);
+      const proPct  = Math.round(macros.protein/sum*100);
+      const fatPct  = 100 - carbPct - proPct;
+
+      resultsEl.innerHTML = `
+        <div class="result-grid">
+          <div class="result-card">
+            <div class="stat"><i class="ri-fire-fill"></i> <span class="kpi">${Math.round(total_kcal)} kcal</span></div>
+            <p class="hint">Tổng năng lượng ước tính cho bữa ăn.</p>
+            <div class="row" style="margin-top:6px; flex-wrap:wrap">${items.map(i=>`<span class="pill" title="${i.confidence?`Độ tin cậy: ${Math.round(i.confidence*100)}%`:''}">${i.name||'Món ăn'} · ${Math.round(i.kcal||0)} kcal</span>`).join('')}</div>
+          </div>
+          <div class="result-card">
+            <div style="display:grid; grid-template-columns:140px 1fr; gap:12px; align-items:center">
+              <div class="donut" style="--carb:${carbPct}; --protein:${proPct}; --fat:${fatPct}"></div>
+              <div>
+                <div class="row" style="gap:12px">
+                  <span class="pill" style="background:#6ee7b7;color:#062014">Carb ${carbPct}%</span>
+                  <span class="pill" style="background:#60a5fa;color:#041321">Protein ${proPct}%</span>
+                  <span class="pill" style="background:#fbbf24;color:#201306">Fat ${fatPct}%</span>
+                </div>
+                <p class="hint" style="margin-top:8px">Tỉ lệ vĩ mô ước tính dựa trên mô hình.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function analyze(){
+      if(!input.files || !input.files[0]) return alert('Vui lòng chọn ảnh trước.');
+      analyzeBtn.disabled = true; analyzeBtn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Đang phân tích...';
+      resultsEl.innerHTML = '<div class="skeleton" style="height:140px; border-radius:12px;"></div>';
+
+      const API_URL = 'http://127.0.0.1:8000/api/predict/'; // đổi theo backend của bạn
+      const fd = new FormData(); fd.append('image', input.files[0]);
+
+      // 20s timeout
+      const ctrl = new AbortController(); const t = setTimeout(()=>ctrl.abort(), 20000);
+
+      try{
+        const res = await fetch(API_URL, { method:'POST', body: fd, signal: ctrl.signal, headers: { 'Authorization': `Token ${token||''}` } });
+        const raw = await res.text(); let data={}; try{ data = raw? JSON.parse(raw):{} }catch{ data = { detail: raw } }
+        if(!res.ok){ throw new Error(data.detail || 'Phân tích thất bại.'); }
+        renderResults(data);
+      }catch(e){
+        resultsEl.innerHTML = `<div class="result-card" style="border-color:#ff767555; background:#ff767520">❌ ${e.name==='AbortError'?'Timeout: máy chủ không phản hồi.':(e.message||e)}</div>`;
+      }finally{
+        clearTimeout(t); analyzeBtn.disabled=false; analyzeBtn.innerHTML='<i class="ri-sparkling-2-fill"></i> Phân tích';
+      }
+    }
+
+    analyzeBtn?.addEventListener('click', analyze);
+  </script>
+</body>
+</html>

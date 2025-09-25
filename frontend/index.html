@@ -1,22 +1,167 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chẩn đoán Calo</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FoodVision - Chẩn đoán Calo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
+  <link rel="stylesheet" href="./style.css" />
+  </head>
 <body>
-    <div class="container">
-        <h1>Chẩn đoán lượng Calo qua hình ảnh</h1>
-        <form id="upload-form">
-            <p>Chọn một hình ảnh bữa ăn của bạn:</p>
-            <input type="file" id="image-input" accept="image/*" required>
-            <button type="submit">Phân tích</button>
-        </form>
-        <div id="results-container">
-            </div>
+  <!-- Header -->
+  <header>
+    <div class="container nav">
+      <a class="logo" href="#top"><i class="ri-restaurant-2-fill"></i> FoodVision</a>
+
+      <input id="menu-toggle" type="checkbox" hidden>
+      <nav class="nav-links">
+        <a href="#top">Trang chủ</a>
+        <a href="#chandoan">Chẩn đoán</a>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#about">Giới thiệu</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a class="btn btn-ghost menu-btn" href="#" onclick="document.getElementById('menu-toggle').click();return false;"><i class="ri-menu-line"></i></a>
+        <a class="btn btn-secondary" href="./login.html"><i class="ri-login-circle-line"></i> Đăng nhập</a>
+        <a class="btn btn-primary" href="./register.html"><i class="ri-user-add-line"></i> Đăng ký</a>
+      </div>
     </div>
-    <script src="script.js"></script>
+  </header>
+
+  <!-- Hero -->
+  <section id="top" class="hero">
+    <svg class="sparkle" viewBox="0 0 800 600" aria-hidden="true">
+      <defs>
+        <radialGradient id="g1" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#42c77a" stop-opacity=".6"/>
+          <stop offset="100%" stop-color="#42c77a" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <circle cx="200" cy="180" r="220" fill="url(#g1)"/>
+      <circle cx="560" cy="60" r="160" fill="#ff7a594d"/>
+      <circle cx="700" cy="380" r="280" fill="#ffd16633"/>
+    </svg>
+
+    <div class="container">
+      <div>
+        <span class="badge reveal">✨ AI Dinh dưỡng thông minh</span>
+        <h1 class="reveal" style="transition-delay:.05s">Chẩn đoán Calo từ Ảnh</h1>
+        <p class="lead reveal" style="transition-delay:.1s">Chỉ cần <b>chụp ảnh món ăn</b> 📸 → Hệ thống AI sẽ nhận diện thực phẩm, <b>tính toán calo</b> ⚡ và đưa ra <b>lời khuyên dinh dưỡng</b> cho bạn.</p>
+        <div class="cta-row reveal" style="transition-delay:.15s">
+          <a class="btn btn-primary" href="./predict.html"><i class="ri-sparkling-2-fill"></i> Bắt đầu ngay</a>
+          <a class="btn btn-secondary" href="#about"><i class="ri-information-line"></i> Tìm hiểu thêm</a>
+        </div>
+      </div>
+
+      <div class="mockup reveal" style="transition-delay:.2s">
+        <img class="hero-img" src="./img/e9f2a9a08353e902c929f4f250699fa7.jpg" alt="Ảnh món ăn" />
+        <div class="floating-stats">
+          <div class="stat-card"><i class="ri-restaurant-line"></i> 3 món ăn được nhận diện</div>
+          <div class="stat-card"><i class="ri-fire-line"></i> 520 kcal ước tính</div>
+          <div class="stat-card"><i class="ri-heart-3-line"></i> Gợi ý: cân bằng carb & đạm</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="chandoan" class="features">
+    <div class="container">
+      <div class="grid-3">
+        <article class="feature-card reveal">
+          <span class="icon"><i class="ri-mental-health-line"></i></span>
+          <h3>Nhận diện món ăn</h3>
+          <p>AI phân tích ảnh và nhận diện chính xác từng thành phần trong đĩa.</p>
+          <span class="glow"></span>
+        </article>
+        <article class="feature-card reveal" style="transition-delay:.06s">
+          <span class="icon"><i class="ri-fire-fill"></i></span>
+          <h3>Tính toán calo</h3>
+          <p>Tự động tính calo từng món và tổng calo cả bữa ăn trong tích tắc.</p>
+          <span class="glow"></span>
+        </article>
+        <article class="feature-card reveal" style="transition-delay:.12s">
+          <span class="icon"><i class="ri-pie-chart-2-line"></i></span>
+          <h3>Lời khuyên dinh dưỡng</h3>
+          <p>Đưa ra gợi ý khẩu phần và kế hoạch ăn uống phù hợp mục tiêu cá nhân.</p>
+          <span class="glow"></span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="about">
+    <div class="container about-wrap">
+      <div>
+        <h2 class="reveal">✨ Giới thiệu Đề tài</h2>
+        <p class="lead reveal" style="transition-delay:.05s"><b>FoodVision</b> là hệ thống Web ứng dụng <b>trí tuệ nhân tạo (AI)</b> để nhận diện món ăn từ hình ảnh 📸 và đưa ra ước lượng lượng calo tiêu thụ. Đây là công cụ hữu ích cho những ai muốn <b>theo dõi dinh dưỡng</b>, <b>giảm cân</b> hoặc <b>xây dựng chế độ ăn uống lành mạnh</b>.</p>
+        <h3 class="reveal" style="transition-delay:.1s">💡 Lợi ích</h3>
+        <div class="benefits">
+          <div class="benefit reveal">⚡ Theo dõi calo nhanh chóng, chính xác.</div>
+          <div class="benefit reveal" style="transition-delay:.06s">🍏 Hỗ trợ xây dựng chế độ ăn uống cân bằng.</div>
+          <div class="benefit reveal" style="transition-delay:.12s">💪 Giúp duy trì sức khỏe và vóc dáng.</div>
+          <div class="benefit reveal" style="transition-delay:.18s">📊 Dashboard trực quan để quản lý bữa ăn.</div>
+        </div>
+      </div>
+
+      <div class="about-visual">
+        <div class="dash-card reveal" style="transition-delay:.2s">
+          <img src="./img/9d9c8f6a23d3aec2d27418c6850d8b35.jpg" alt="FoodVision Dashboard" />
+          <div class="pulse-ring" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container" id="dashboard">
+      <div style="display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:center">
+        <div>
+          <strong style="font-size:1.05rem">🍽️ FoodVision</strong>
+          <p style="margin:.35rem 0 0;color:var(--muted)">Ứng dụng AI nhận diện món ăn và tính toán calo nhanh chóng.</p>
+        </div>
+        <div style="display:flex;gap:.6rem;align-items:center">
+          <a class="btn btn-secondary" href="#"><i class="ri-github-line"></i> GitHub</a>
+          <a class="btn btn-primary" href="#signup"><i class="ri-rocket-2-fill"></i> Dùng thử miễn phí</a>
+        </div>
+      </div>
+      <p style="margin:16px 0 0;color:var(--muted);text-align:center">© 2025 FoodVision. Made with ❤️ by <b>Group 4</b>.</p>
+    </div>
+  </footer>
+
+  <button id="toTop" aria-label="Lên đầu trang" class="btn btn-secondary" style="position:fixed; right:16px; bottom:16px; opacity:0; pointer-events:none; transition:.3s;">
+    <i class="ri-arrow-up-line"></i>
+  </button>
+
+  <script>
+    // Reveal on scroll
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+    // Scroll to top
+    const toTop = document.getElementById('toTop');
+    window.addEventListener('scroll', ()=>{
+      if (window.scrollY > 280){ toTop.style.opacity = 1; toTop.style.pointerEvents = 'auto'; }
+      else { toTop.style.opacity = 0; toTop.style.pointerEvents = 'none'; }
+    });
+    toTop.addEventListener('click', ()=>window.scrollTo({top:0, behavior:'smooth'}));
+
+    // Magnetic hover for primary buttons
+    document.querySelectorAll('.btn-primary').forEach(btn=>{
+      btn.addEventListener('mousemove', (e)=>{
+        const r = btn.getBoundingClientRect();
+        const x = e.clientX - r.left - r.width/2;
+        const y = e.clientY - r.top - r.height/2;
+        btn.style.transform = `translate(${x*.02}px, ${y*.02}px)`;
+      });
+      btn.addEventListener('mouseleave', ()=>{ btn.style.transform = ''; });
+    });
+  </script>
 </body>
 </html>

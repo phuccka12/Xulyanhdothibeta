@@ -1,11 +1,29 @@
-// Lấy các element từ HTML
 const uploadForm = document.getElementById('upload-form');
 const imageInput = document.getElementById('image-input');
 const resultsContainer = document.getElementById('results-container');
+const submitButton = uploadForm.querySelector('button');
 
-// Bắt sự kiện khi người dùng nhấn nút "Phân tích"
+// KIỂM TRA TRẠNG THÁI ĐĂNG NHẬẬP KHI TẢI TRANG
+document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        // Nếu không có token, không cho phép sử dụng và yêu cầu đăng nhập
+        uploadForm.innerHTML = `
+            <p class="error">Vui lòng <a href="login.html">đăng nhập</a> để sử dụng chức năng này.</p>
+        `;
+    }
+});
+
 uploadForm.addEventListener('submit', async (event) => {
-    event.preventDefault(); // Ngăn form tải lại trang
+    event.preventDefault();
+
+    // Lấy token từ Local Storage
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+        window.location.href = 'login.html';
+        return;
+    }
 
     const file = imageInput.files[0];
     if (!file) {
@@ -13,44 +31,51 @@ uploadForm.addEventListener('submit', async (event) => {
         return;
     }
 
-    // Hiển thị trạng thái đang xử lý
+    submitButton.disabled = true;
     resultsContainer.innerHTML = '<p>Đang phân tích, vui lòng chờ...</p>';
 
-    // Tạo FormData để gửi file
     const formData = new FormData();
     formData.append('file', file);
 
-    // Gửi yêu cầu đến server Flask
     try {
-       const response = await fetch('http://127.0.0.1:8000/api/predict/',{
+        const response = await fetch('http://12_7.0.0.1:8000/api/predict/', {
             method: 'POST',
+            headers: {
+                // Thêm header Authorization để gửi token
+                'Authorization': `Token ${token}`
+            },
             body: formData,
         });
 
+        if (response.status === 401) { // Lỗi xác thực
+            throw new Error('Xác thực không thành công. Vui lòng đăng nhập lại.');
+        }
         if (!response.ok) {
             throw new Error(`Lỗi server: ${response.status}`);
         }
-
-        const data = await response.json();
         
-        // Hiển thị kết quả ra màn hình
+        const data = await response.json();
         displayResults(data);
 
     } catch (error) {
         console.error("Có lỗi xảy ra:", error);
-        resultsContainer.innerHTML = `<p class="error">Không thể kết nối đến server. Hãy đảm bảo backend đang chạy!</p>`;
+        resultsContainer.innerHTML = `<p class="error">${error.message}</p>`;
+        // Nếu lỗi xác thực, xóa token cũ và chuyển hướng
+        if (error.message.includes('Xác thực')) {
+            localStorage.removeItem('authToken');
+            setTimeout(() => { window.location.href = 'login.html'; }, 2000);
+        }
+    } finally {
+        submitButton.disabled = false;
     }
 });
 
-// Hàm để hiển thị kết quả
 function displayResults(data) {
-    // Nếu không phát hiện món ăn nào
+    // ... hàm này giữ nguyên như cũ ...
     if (data.detected_foods.length === 0) {
         resultsContainer.innerHTML = '<p>Không phát hiện được món ăn nào trong ảnh.</p>';
         return;
     }
-
-    // Tạo HTML để hiển thị danh sách món ăn
     let foodListHtml = '<ul>';
     data.detected_foods.forEach(food => {
         foodListHtml += `<li>
@@ -59,8 +84,6 @@ function displayResults(data) {
         </li>`;
     });
     foodListHtml += '</ul>';
-
-    // Cập nhật nội dung cho div kết quả
     resultsContainer.innerHTML = `
         <h2>Kết quả phân tích</h2>
         <h3>Tổng lượng Calo: ${data.total_calories} kcal</h3>

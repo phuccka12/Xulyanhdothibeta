@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng ký - CaloLens</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
+  <style>
+    :root{
+      --bg1:#131b27; --bg2:#0f1721; --grid1:#42c77a; --grid2:#ff7a59; --grid3:#ffd166;
+      --text:#f8fbff; --muted:#d7e0ea; --card:rgba(255,255,255,.14);
+      --border:#ffffff26; --ring:#42c77a; --danger:#ff6b6b; --ok:#2ecc71;
+      --radius:18px; --shadow:0 20px 60px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,sans-serif; color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 80% -10%, rgba(66,199,122,.70) 10%, transparent 60%),
+        radial-gradient(1000px 500px at 10% 10%, rgba(255,122,89,.60) 10%, transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
+    }
+    .container{width:min(980px,92%); margin-inline:auto}
+    .shell{min-height:100dvh; display:grid; place-items:center; position:relative; isolation:isolate}
+
+    /* Decorative blobs */
+    .blob{position:absolute; inset:auto auto 5% -8%; width:260px; height:260px; border-radius:50%; filter:blur(18px); opacity:.5; background:radial-gradient(closest-side, var(--grid1), transparent 70%); animation:float 10s ease-in-out infinite}
+    .blob.b2{inset:10% -6% auto auto; width:300px; height:300px; background:radial-gradient(closest-side, var(--grid2), transparent 70%); animation-duration:12s}
+    .blob.b3{inset:-8% 40% auto auto; width:220px; height:220px; background:radial-gradient(closest-side, var(--grid3), transparent 70%); animation-duration:14s}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+
+    /* Card */
+    .card{position:relative; width:min(560px,94%); background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); backdrop-filter:blur(14px); padding:28px 22px}
+    .card h1{margin:6px 8px 18px; font-size:clamp(1.4rem, 1.1rem + 1.2vw, 2rem)}
+    .topbar{display:flex; gap:8px; align-items:center; margin:6px 6px 0}
+    .back{display:inline-flex; align-items:center; gap:.45rem; padding:10px 12px; border-radius:12px; border:1px solid var(--border); color:var(--text); text-decoration:none; background:transparent}
+    .back:hover{background:rgba(255,255,255,.06)}
+
+    /* Form */
+    form{display:grid; gap:14px}
+    .group{position:relative}
+    .icon{position:absolute; left:12px; top:50%; transform:translateY(-50%); opacity:.85}
+    .field{width:100%; padding:14px 14px 14px 42px; color:var(--text); background:rgba(15,23,33,.55); border:1px solid var(--border); border-radius:12px; outline:none; transition:.25s}
+    .field::placeholder{color:#94a3b87a}
+    .field:focus{border-color:var(--ring); box-shadow:0 0 0 3px rgba(66,199,122,.25)}
+    .row{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+
+    /* Meter */
+    .meter{height:8px; background:rgba(255,255,255,.14); border-radius:999px; overflow:hidden; border:1px solid var(--border)}
+    .meter>span{display:block; height:100%; width:0%; background:linear-gradient(90deg,#ff6961,#ffd166,#8ce99a); transition:width .35s ease}
+    .hint{font-size:.85rem; color:var(--muted); margin-top:6px}
+
+    /* Alerts */
+    .error{white-space:pre-line; background:#ff767520; border:1px solid #ff767555; padding:10px 12px; border-radius:12px; color:#ffdede}
+    .success{background:#2ecc7140; border:1px solid #2ecc7170; color:#eafff3; padding:10px 12px; border-radius:12px}
+    .hidden{display:none}
+
+    /* Buttons */
+    .btn{display:inline-flex; align-items:center; justify-content:center; gap:.6rem; font-weight:600; padding:12px 14px; border-radius:12px; border:1px solid var(--border); background:linear-gradient(135deg, var(--grid1), #8ff0bd); color:#052012; cursor:pointer; transition:.25s; box-shadow:0 10px 26px rgba(66,199,122,.35)}
+    .btn:hover{transform:translateY(-2px)}
+    .btn[disabled]{opacity:.6; cursor:not-allowed; transform:none}
+
+    .swap{position:absolute; right:10px; top:50%; transform:translateY(-50%); border:0; background:transparent; color:#cfe7d9; cursor:pointer; opacity:.8}
+    .swap:hover{opacity:1}
+    .switch{margin-top:10px; color:var(--muted)}
+    .switch a{color:#eafff3}
+
+    @media (max-width:640px){ .row{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="blob"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+    <div class="card container" role="region" aria-labelledby="title">
+      <div class="topbar">
+        <a class="back" href="index.html"><i class="ri-arrow-left-line" aria-hidden="true"></i> Về trang chủ</a>
+        <span class="badge" style="opacity:.8; color:var(--muted)">🍽️ CaloLens</span>
+      </div>
+
+      <h1 id="title">Tạo tài khoản mới</h1>
+
+      <form id="register-form" novalidate>
+        <div class="group">
+          <i class="ri-user-3-line icon" aria-hidden="true"></i>
+          <input class="field" type="text" id="username" name="username" placeholder="Tên người dùng" minlength="3" autocomplete="username" required />
+        </div>
+        <div class="group">
+          <i class="ri-mail-line icon" aria-hidden="true"></i>
+          <input class="field" type="email" id="email" name="email" placeholder="Email" inputmode="email" autocomplete="email" required />
+        </div>
+        <div class="row">
+          <div class="group">
+            <i class="ri-lock-2-line icon" aria-hidden="true"></i>
+            <input class="field" type="password" id="password" name="password" placeholder="Mật khẩu (≥ 8 ký tự)" minlength="8" autocomplete="new-password" required />
+            <button type="button" class="swap" aria-label="Hiện/ẩn mật khẩu" data-toggle="password"><i class="ri-eye-off-line"></i></button>
+          </div>
+          <div class="group">
+            <i class="ri-shield-keyhole-line icon" aria-hidden="true"></i>
+            <input class="field" type="password" id="password2" name="password2" placeholder="Xác nhận mật khẩu" minlength="8" autocomplete="new-password" required />
+            <button type="button" class="swap" aria-label="Hiện/ẩn mật khẩu" data-toggle="password2"><i class="ri-eye-off-line"></i></button>
+          </div>
+        </div>
+
+        <div class="meter" aria-hidden="true"><span id="meterBar"></span></div>
+        <div id="strengthText" class="hint">Độ mạnh mật khẩu: Chưa có</div>
+
+        <div id="error-message" class="error hidden" role="alert"></div>
+        <div id="success-message" class="success hidden" role="status">✅ Tạo tài khoản thành công! Đang chuyển hướng...</div>
+
+        <button class="btn" id="submitBtn" type="submit">
+          <i class="ri-rocket-2-fill" aria-hidden="true"></i> Đăng ký
+        </button>
+      </form>
+
+      <p class="switch">Đã có tài khoản? <a href="login.html">Đăng nhập ngay</a></p>
+    </div>
+  </div>
+
+  <script>
+    const f = document.getElementById('register-form');
+    const err = document.getElementById('error-message');
+    const okMsg = document.getElementById('success-message');
+    const submitBtn = document.getElementById('submitBtn');
+    const username = document.getElementById('username');
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+    const password2 = document.getElementById('password2');
+    const bar = document.getElementById('meterBar');
+    const strengthText = document.getElementById('strengthText');
+
+    // Helpers
+    const trim = (s)=> (s||'').trim();
+    const emailOk = (v)=> /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trim(v));
+    const usernameOk = (v)=> trim(v).length >= 3;
+    const passStrength = (p)=>{ let s=0; if(p.length>=8)s++; if(/[a-z]/.test(p)&&/[A-Z]/.test(p))s++; if(/\d/.test(p))s++; if(/[^\w\s]/.test(p))s++; return s; };
+
+    function renderStrength(){
+      const s = passStrength(password.value);
+      const pct = (s/4)*100; bar.style.width = pct+'%';
+      strengthText.textContent = 'Độ mạnh mật khẩu: '+['Chưa có','Yếu','Trung bình','Khá','Mạnh'][s];
+    }
+
+    function reasonNotReady(){
+      const u = trim(username.value), em = trim(email.value), p1 = password.value, p2 = password2.value;
+      if(!usernameOk(u)) return 'Tên người dùng phải ≥ 3 ký tự.';
+      if(!emailOk(em))  return 'Email không hợp lệ (xem lại dấu cách).';
+      if(p1.length < 8) return 'Mật khẩu phải ≥ 8 ký tự.';
+      if(p1 !== p2)     return 'Mật khẩu xác nhận chưa trùng.';
+      return '';
+    }
+
+    function liveValidate(){
+      renderStrength();
+      const why = reasonNotReady();
+      submitBtn.disabled = !!why;        // chỉ khoá khi chưa hợp lệ
+      submitBtn.title = why || '';
+    }
+
+    // Toggle mật khẩu
+    document.querySelectorAll('[data-toggle]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = btn.getAttribute('data-toggle');
+        const input = document.getElementById(id);
+        const eye = btn.querySelector('i');
+        if(input.type==='password'){ input.type='text'; eye.className='ri-eye-line'; }
+        else { input.type='password'; eye.className='ri-eye-off-line'; }
+      })
+    })
+
+    // Live checks
+    ;[username,email,password,password2].forEach(el=>{
+      el.addEventListener('input', ()=>{ err.classList.add('hidden'); okMsg.classList.add('hidden'); liveValidate(); });
+      el.addEventListener('blur', liveValidate);
+      el.addEventListener('change', liveValidate);
+    });
+    liveValidate();
+
+    const API_URL = 'http://127.0.0.1:8000/api/register/'; // chỉnh nếu backend ở host khác
+
+    function scrollInto(el){ el?.scrollIntoView({behavior:'smooth', block:'center'}); }
+
+    f.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const why = reasonNotReady();
+      if(why){ err.textContent = why; err.classList.remove('hidden'); scrollInto(err); return; }
+
+      err.textContent=''; err.classList.add('hidden'); okMsg.classList.add('hidden');
+      submitBtn.disabled = true; submitBtn.setAttribute('aria-busy','true');
+      const original = submitBtn.innerHTML; submitBtn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Đang xử lý...';
+
+      // Timeout 15s nếu server im lặng
+      const ctrl = new AbortController();
+      const t = setTimeout(()=>ctrl.abort(), 15000);
+
+      try{
+        const res = await fetch(API_URL, {
+          method:'POST', headers:{'Content-Type':'application/json'}, signal:ctrl.signal,
+          body: JSON.stringify({ username: trim(username.value), email: trim(email.value), password: password.value, password2: password2.value })
+        });
+        const raw = await res.text();
+        let data = {}; try{ data = raw? JSON.parse(raw) : {}; } catch{ data = { detail: raw }; }
+
+        if(!res.ok){
+          const msg = Object.entries(data).map(([k,v])=> Array.isArray(v)? v.join(' ') : String(v)).join('\n') || 'Đăng ký thất bại.';
+          throw new Error(msg);
+        }
+
+        if(data.token) localStorage.setItem('authToken', data.token);
+        okMsg.textContent = '✅ Tạo tài khoản thành công! Chuyển về trang chủ trong 2 giây...';
+        okMsg.classList.remove('hidden'); scrollInto(okMsg);
+        setTimeout(()=> location.href='./login.html', 2000);
+      }catch(e2){
+        const reason = (e2.name==='AbortError') ? 'Kết nối chậm hoặc máy chủ không phản hồi (timeout 15s).' : (e2.message || String(e2));
+        err.textContent = reason; err.classList.remove('hidden'); scrollInto(err);
+      }finally{
+        clearTimeout(t);
+        submitBtn.disabled = false; submitBtn.removeAttribute('aria-busy'); submitBtn.innerHTML = original;
+      }
+    });
+  </script>
+</body>
+</html>

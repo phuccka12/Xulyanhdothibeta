@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng nhập - CaloLens</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet" />
+  <style>
+    :root{
+      --bg1:#131b27; --bg2:#0f1721; --grid1:#42c77a; --grid2:#ff7a59; --grid3:#ffd166;
+      --text:#f8fbff; --muted:#d7e0ea; --card:rgba(255,255,255,.14);
+      --border:#ffffff26; --ring:#42c77a; --danger:#ff6b6b;
+      --radius:18px; --shadow: 0 20px 60px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,sans-serif; color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 80% -10%, rgba(66,199,122,.70) 10%, transparent 60%),
+        radial-gradient(1000px 500px at 10% 10%, rgba(255,122,89,.60) 10%, transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow-x:hidden
+    }
+    .container{width:min(980px,92%); margin-inline:auto}
+    .shell{min-height:100dvh; display:grid; place-items:center; position:relative; isolation:isolate}
+
+    .blob{position:absolute; inset:auto auto 5% -8%; width:260px; height:260px; border-radius:50%; filter:blur(18px); opacity:.5; background:radial-gradient(closest-side, var(--grid1), transparent 70%); animation: float 10s ease-in-out infinite}
+    .blob.b2{inset:10% -6% auto auto; width:300px; height:300px; background:radial-gradient(closest-side, var(--grid2), transparent 70%); animation-duration:12s}
+    .blob.b3{inset:-8% 40% auto auto; width:220px; height:220px; background:radial-gradient(closest-side, var(--grid3), transparent 70%); animation-duration:14s}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+
+    .card{position:relative; width:min(520px,94%); background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); backdrop-filter: blur(14px); padding:26px 22px}
+    .header{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px}
+    .back{display:inline-flex; align-items:center; gap:.45rem; padding:10px 12px; border-radius:12px; border:1px solid var(--border); color:var(--text); text-decoration:none; background:transparent}
+    .back:hover{background:rgba(255,255,255,.06)}
+
+    h1{margin:8px 8px 4px; font-size:clamp(1.3rem, 1.05rem + 1.2vw, 1.9rem)}
+    p.sub{margin:0 8px 12px; color:var(--muted)}
+
+    form{display:grid; gap:14px}
+    .group{position:relative}
+    .icon{position:absolute; left:12px; top:50%; transform:translateY(-50%); opacity:.85}
+    .field{width:100%; padding:14px 14px 14px 42px; color:var(--text); background:rgba(15,23,33,.55); border:1px solid var(--border); border-radius:12px; outline:none; transition:.25s}
+    .field::placeholder{color:#94a3b87a}
+    .field:focus{border-color:var(--ring); box-shadow:0 0 0 3px rgba(66,199,122,.25)}
+
+    .row{display:flex; align-items:center; justify-content:space-between; gap:10px}
+    .remember{display:flex; align-items:center; gap:8px; color:var(--muted); font-size:.95rem}
+    .remember input{accent-color:#42c77a}
+    .link{color:#eafff3; text-decoration:none}
+
+    .btn{display:inline-flex; align-items:center; justify-content:center; gap:.6rem; font-weight:600; padding:12px 14px; border-radius:12px; border:1px solid var(--border); background:linear-gradient(135deg, var(--grid1), #8ff0bd); color:#052012; cursor:pointer; transition:.25s; box-shadow:0 10px 26px rgba(66,199,122,.35)}
+    .btn:hover{transform:translateY(-2px)}
+    .btn[disabled]{opacity:.6; cursor:not-allowed; transform:none}
+
+    .error{white-space:pre-line; background:#ff767520; border:1px solid #ff767555; padding:10px 12px; border-radius:12px; color:#ffdede}
+    .hidden{display:none}
+
+    .switch{margin-top:10px; color:var(--muted)}
+    .switch a{color:#eafff3}
+
+    @media (max-width:560px){ .row{flex-direction:column; align-items:flex-start} }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="blob"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+    <div class="card container" role="region" aria-labelledby="title">
+      <div class="header">
+        <a class="back" href="index.html"><i class="ri-arrow-left-line" aria-hidden="true"></i> Về trang chủ</a>
+        <span class="badge" style="opacity:.8; color:var(--muted)">🍽️ CaloLens</span>
+      </div>
+      <h1 id="title">Đăng nhập</h1>
+      <p class="sub">Chào mừng trở lại! Vui lòng nhập thông tin để tiếp tục.</p>
+
+      <form id="login-form" novalidate>
+        <div class="group">
+          <i class="ri-user-3-line icon" aria-hidden="true"></i>
+          <input class="field" type="text" id="username" name="username" placeholder="Tên người dùng" autocomplete="username" required />
+        </div>
+        <div class="group">
+          <i class="ri-lock-2-line icon" aria-hidden="true"></i>
+          <input class="field" type="password" id="password" name="password" placeholder="Mật khẩu" autocomplete="current-password" required />
+          <button type="button" class="toggle" aria-label="Hiện/ẩn mật khẩu" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:transparent; border:0; color:#d7e0ea; cursor:pointer; opacity:.85"><i class="ri-eye-off-line"></i></button>
+        </div>
+
+        <div class="row">
+          <label class="remember"><input type="checkbox" id="remember" /> Ghi nhớ đăng nhập</label>
+          <a class="link" href="#">Quên mật khẩu?</a>
+        </div>
+
+        <div id="error-message" class="error hidden" role="alert"></div>
+
+        <button class="btn" id="submitBtn" type="submit">
+          <i class="ri-login-circle-line" aria-hidden="true"></i> Đăng nhập
+        </button>
+      </form>
+
+      <p class="switch">Chưa có tài khoản? <a href="register.html">Tạo tài khoản mới</a></p>
+    </div>
+  </div>
+
+  <script>
+    const f = document.getElementById('login-form');
+    const err = document.getElementById('error-message');
+    const submitBtn = document.getElementById('submitBtn');
+    const username = document.getElementById('username');
+    const password = document.getElementById('password');
+
+    // Toggle password visibility
+    document.querySelector('.toggle').addEventListener('click', (e)=>{
+      const eye = e.currentTarget.querySelector('i');
+      if(password.type === 'password'){ password.type='text'; eye.className='ri-eye-line'; }
+      else { password.type='password'; eye.className='ri-eye-off-line'; }
+    });
+
+    // Enable/disable button according to validity
+    function validate(){
+      const ok = username.value.trim().length>0 && password.value.trim().length>0;
+      submitBtn.disabled = !ok;
+      if(ok) err.classList.add('hidden');
+    }
+    username.addEventListener('input', validate);
+    password.addEventListener('input', validate);
+    validate();
+
+    f.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      err.textContent = ''; err.classList.add('hidden');
+      submitBtn.disabled = true; submitBtn.setAttribute('aria-busy','true');
+      const original = submitBtn.innerHTML; submitBtn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Đang đăng nhập...';
+
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/login/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: username.value.trim(), password: password.value })
+        });
+        const data = await response.json().catch(()=>({}));
+
+        if (!response.ok) {
+          throw new Error((data && (data.detail || data.error)) || 'Tên người dùng hoặc mật khẩu không đúng.');
+        }
+
+        localStorage.setItem('authToken', data.token);
+        // Lưu username nếu tick Remember
+        if (document.getElementById('remember').checked) {
+          localStorage.setItem('rememberUsername', username.value.trim());
+        } else {
+          localStorage.removeItem('rememberUsername');
+        }
+
+        alert('Đăng nhập thành công!');
+        window.location.href = './predict.html';
+      } catch (error) {
+        err.textContent = error.message;
+        err.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false; submitBtn.removeAttribute('aria-busy'); submitBtn.innerHTML = original;
+      }
+    });
+
+    // Prefill username if remembered
+    const remembered = localStorage.getItem('rememberUsername');
+    if (remembered) {
+      username.value = remembered;
+      document.getElementById('remember').checked = true;
+    }
+  </script>
+</body>
+</html>
