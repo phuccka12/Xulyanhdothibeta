@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kiểm tra API Predict</title>
+</head>
+<body>
+    <h1>Trang kiểm tra API tối giản</h1>
+    <form id="test-form">
+        <div>
+            <label for="token-input">Dán Token vào đây:</label><br>
+            <input type="text" id="token-input" size="50" required>
+        </div>
+        <br>
+        <div>
+            <label for="file-input">Chọn file ảnh:</label><br>
+            <input type="file" id="file-input" required>
+        </div>
+        <br>
+        <button type="submit">Gửi Request</button>
+    </form>
+
+    <h2>Kết quả từ Server:</h2>
+    <pre id="response-output" style="background-color: #eee; padding: 10px; border: 1px solid #ccc;"></pre>
+
+    <script>
+        const testForm = document.getElementById('test-form');
+        const tokenInput = document.getElementById('token-input');
+        const fileInput = document.getElementById('file-input');
+        const responseOutput = document.getElementById('response-output');
+
+        testForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const token = tokenInput.value;
+            const file = fileInput.files[0];
+
+            if (!token || !file) {
+                responseOutput.textContent = 'Vui lòng điền đủ token và chọn file.';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            responseOutput.textContent = 'Đang gửi request...';
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/predict/', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Token ${token}`
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                // In toàn bộ kết quả JSON ra màn hình
+                responseOutput.textContent = JSON.stringify(data, null, 2);
+
+            } catch (error) {
+                responseOutput.textContent = `LỖI: ${error.toString()}`;
+            }
+        });
+    </script>
+</body>
+</html>
